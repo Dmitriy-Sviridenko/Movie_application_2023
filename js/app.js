@@ -5,7 +5,6 @@ const API_URL_SEARCH = "https://kinopoiskapiunofficial.tech/api/v2.1/films/searc
 
 getMovies(API_URL_POPULAR);
 
-
 async function getMovies(url) {
   const resp = await fetch(url, {
     headers: {
@@ -45,9 +44,6 @@ function getFilmRating(rating) {
   }
 };
 
-
-
-
 function showMovies (data) {
   const moviesEl = document.querySelector(".movies");
 
@@ -69,17 +65,15 @@ function showMovies (data) {
         <div class="movie__average movie__average--${getClassByRate(movie.ratingKinopoisk)}">${getFilmRating(movie.ratingKinopoisk)}</div>
       </div>
       `;
+      movieEl.addEventListener("click", () => openModal(movie.kinopoiskId));
       moviesEl.appendChild(movieEl);
     });
   }
 
   if (data.films) {
-    
-
     data.films.forEach((movie) => {
       const movieEl = document.createElement("div");
       movieEl.classList.add("movie");
-
       
       movieEl.innerHTML = `
       <div class="movie__cover-inner">
@@ -93,6 +87,7 @@ function showMovies (data) {
       </div>
       `
       ;
+      movieEl.addEventListener("click", () => openModal(movie.filmId));
       moviesEl.appendChild(movieEl);
     });
   }
@@ -109,4 +104,29 @@ form.addEventListener("submit", (e) => {
     search.value = "";
   }
 });
+
+
+//modal
+const modalEl = document.querySelector(".modal");
+
+async function openModal(id) {
+  modalEl.classList.add("modal--show");
+  console.log(modalEl);
+  console.log(id);
+
+  modalEl.innerHTML = `
+    <div class="modal__card">
+      <img class="modal__movie-backdrop" src="изображение" alt="">
+      <h2>
+        <span class="modal__movie-title">Заголовок</span>
+        <span class="modal__movie-release-year"> - год</span>
+      </h2>
+      <ul class="modal__movie-info">
+        <div class="loader"></div>
+        <li class="modal__movie-genre">Жанр - жанр</li>
+      </ul>
+      <button type="button" class="modal__button-close">Закрыть</button>
+    </div>
+  `  
+}
 
