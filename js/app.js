@@ -1,6 +1,7 @@
 const API_KEY = "9e7877af-7c8a-41bf-9574-4c8eefc9ec3f";
 const API_URL_POPULAR = "https://kinopoiskapiunofficial.tech/api/v2.2/films/collections?type=TOP_250_MOVIES&page=1";
 const API_URL_SEARCH = "https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword?keyword="
+const API_URL_MOVIE_DETAILS = "https://kinopoiskapiunofficial.tech/api/v2.2/films/"
 
 
 getMovies(API_URL_POPULAR);
@@ -110,23 +111,50 @@ form.addEventListener("submit", (e) => {
 const modalEl = document.querySelector(".modal");
 
 async function openModal(id) {
+  const resp = await fetch(API_URL_MOVIE_DETAILS + id, {
+    headers: {
+      'X-API-KEY': API_KEY,
+      'Content-Type': 'application/json',
+    }
+  });
+
+    const respData = await resp.json();
+  console.log(respData)
+
   modalEl.classList.add("modal--show");
-  console.log(modalEl);
-  console.log(id);
 
   modalEl.innerHTML = `
     <div class="modal__card">
-      <img class="modal__movie-backdrop" src="изображение" alt="">
+      <img class="modal__movie-backdrop" src="${respData.coverUrl}" alt="">
       <h2>
-        <span class="modal__movie-title">Заголовок</span>
-        <span class="modal__movie-release-year"> - год</span>
+        <span class="modal__movie-title">${respData.nameRu}</span>
+        <span class="modal__movie-release-year">${respData.year}</span>
       </h2>
       <ul class="modal__movie-info">
         <div class="loader"></div>
-        <li class="modal__movie-genre">Жанр - жанр</li>
+        <li class="modal__movie-genre">Жанр - ${respData.genres.map((el) => ` <span>${el.genre}</span>`)}</li>
+        <li class="modal__movie-genre">Время</li>
       </ul>
       <button type="button" class="modal__button-close">Закрыть</button>
     </div>
   `  
-}
 
+  const btnClose = document.querySelector(".modal__button-close")
+  btnClose.addEventListener("click", () => closeModal());
+};
+
+function closeModal () {
+  modalEl.classList.remove("modal--show");
+};
+
+window.addEventListener("click", (e) => {
+  if (e.target === modalEl) {
+    closeModal();
+  }
+})
+
+window.addEventListener("keydown", (e) => {
+  if (e.keyCode === 27) {
+    closeModal();
+  }
+})

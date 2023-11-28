@@ -114,7 +114,7 @@ body {
 
 .movie__average--red {
   border: 2px solid red;
-};
+}
 
 .modal {
   display: none;
