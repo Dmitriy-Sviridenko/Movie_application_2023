@@ -118,10 +118,9 @@ async function openModal(id) {
     }
   });
 
-    const respData = await resp.json();
-  console.log(respData)
-
+  const respData = await resp.json();
   modalEl.classList.add("modal--show");
+  document.body.classList.add("stop-scrolling");
 
   modalEl.innerHTML = `
     <div class="modal__card">
@@ -133,7 +132,9 @@ async function openModal(id) {
       <ul class="modal__movie-info">
         <div class="loader"></div>
         <li class="modal__movie-genre">Жанр - ${respData.genres.map((el) => ` <span>${el.genre}</span>`)}</li>
-        <li class="modal__movie-genre">Время</li>
+        ${respData.filmLength ? `<li class="modal__movie-runtime">Время - ${respData.filmLength} минут</li>` : ""}
+        <li>   Сайт: <a class="modal__movie-site" href="${respData.webUrl}">${respData.webUrl}</a></li>
+        ${respData.description ? `<li class="modal__movie-overview">${respData.description}</li>`  : ""}
       </ul>
       <button type="button" class="modal__button-close">Закрыть</button>
     </div>
@@ -145,6 +146,7 @@ async function openModal(id) {
 
 function closeModal () {
   modalEl.classList.remove("modal--show");
+  document.body.classList.remove("stop-scrolling");
 };
 
 window.addEventListener("click", (e) => {
